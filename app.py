@@ -2,12 +2,12 @@ from flask import Flask, flash, render_template, request, redirect, send_file, u
 from celery import Celery
 from flask_mail import Mail, Message
 
-app = Flask(__name__)
+app = Flask('app')
 app.config.from_object("config")
 app.secret_key = app.config['SECRET_KEY']
 
 # set up celery client
-client = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+client = Celery('app', broker=app.config['CELERY_BROKER_URL'])
 client.conf.update(app.config)
 
 # set up Flask-Mail Integration
@@ -19,9 +19,7 @@ def send_mail(data):
     """ Function to send emails in the background.
     """
     with app.app_context():
-        msg = Message("Ping!",
-                      sender="admin.ping",
-                      recipients=[data['email']])
+        msg = Message("Ping!", sender="admin.ping", recipients=[data['email']])
         msg.body = data['message']
         mail.send(msg)
 
@@ -32,11 +30,12 @@ def index():
         return render_template('index.html')
 
     elif request.method == 'POST':
-        data = {}
-        data['email'] = request.form['email']
-        data['first_name'] = request.form['first_name']
-        data['last_name'] = request.form['last_name']
-        data['message'] = request.form['message']
+        data = {
+            'email': request.form['email'],
+            'first_name': request.form['first_name'],
+            'last_name': request.form['last_name'],
+            'message': request.form['message']
+        }
         duration = int(request.form['duration'])
         duration_unit = request.form['duration_unit']
 
@@ -45,7 +44,7 @@ def index():
             duration *= 60
         elif duration_unit == 'hours':
             duration *= 3600
-        elif duration_unit == 'days':
+        else:  # days
             duration *= 86400
 
         send_mail.apply_async(args=[data], countdown=duration)
