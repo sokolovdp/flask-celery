@@ -7,14 +7,14 @@ app.config.from_object("config")
 app.secret_key = app.config['SECRET_KEY']
 
 # set up celery client
-client = Celery('app', broker=app.config['CELERY_BROKER_URL'])
+client = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 client.conf.update(app.config)
 
 # set up Flask-Mail Integration
 mail = Mail(app)
 
 
-@client.task
+@client.task(name='send-mail')
 def send_mail(data):
     """ Function to send emails in the background.
     """
