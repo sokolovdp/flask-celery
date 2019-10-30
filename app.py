@@ -1,4 +1,3 @@
-import os
 from flask import Flask, flash, render_template, request, redirect, send_file, url_for
 from celery import Celery
 from flask_mail import Mail, Message
@@ -14,15 +13,16 @@ client.conf.update(app.config)
 # set up Flask-Mail Integration
 mail = Mail(app)
 
+
 @client.task
 def send_mail(data):
     """ Function to send emails in the background.
     """
     with app.app_context():
         msg = Message("Ping!",
-                    sender="admin.ping",
-                    recipients=[data['email']])
-        msg.body = data['message']        
+                      sender="admin.ping",
+                      recipients=[data['email']])
+        msg.body = data['message']
         mail.send(msg)
 
 
@@ -50,7 +50,7 @@ def index():
 
         send_mail.apply_async(args=[data], countdown=duration)
         flash(f"Email will be sent to {data['email']} in {request.form['duration']} {duration_unit}")
-        
+
         return redirect(url_for('index'))
 
 
