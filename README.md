@@ -55,5 +55,5 @@ $ flower -A app.client --port=5555
 
 8. Navigate to http://localhost:5555 to view the workers and scheduled messages under `Tasks` section
 
-9. Check the receipient email inbox for the scheduled message after the time has ellapsed
+9. Check the recipient email inbox for the scheduled message after the time has elapsed
 
