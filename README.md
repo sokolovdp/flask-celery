@@ -18,7 +18,7 @@ Kindly ensure you have the following installed on your machine:
 
 1. Clone the repository
 ```
-$ git clone https://github.com/ro6ley/flask-celery-demo.git
+$ git clone https://github.com/sokolovdp/flask-celery.git
 ```
 
 2. Check into the cloned repository
